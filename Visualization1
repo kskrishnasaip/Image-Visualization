@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div id="myDiv" style="width:100%;height:500px;"></div>
+    <script>
+        Plotly.d3.csv("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv", function(err, rows){
+
+            function unpack(rows, key) {
+                return rows.map(function(row) { return row[key]; });
+            }
+
+            var data = [{
+              x: unpack(rows, 'year'),
+              y: unpack(rows, 'pop'),
+              type: "bar",
+              marker: {
+                color: ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'],
+                line: {
+                  color: '#fff',
+                  width: 1.5
+                }
+              },
+              transforms: [{
+                type: 'groupby',
+                groups: unpack(rows, 'continent'),
+                styles: [
+                  {target: 'Europe', value: {marker: {color: '#636efa'}}},
+                  {target: 'Americas', value: {marker: {color: '#ef553b'}}},
+                  {target: 'Asia', value: {marker: {color: '#00cc96'}}},
+                  {target: 'Africa', value: {marker: {color: '#ff6b6b'}}},
+                  {target: 'Oceania', value: {marker: {color: '#aaffc3'}}}
+                ]
+              }]
+            }];
+
+            var layout = {
+                title: 'Population by Year and Continent',
+                xaxis: {title: 'Year'},
+                yaxis: {title: 'Population'},
+                barmode: 'group'
+            };
+
+            Plotly.newPlot('myDiv', data, layout);
+        });
+    </script>
+</body>
+</html>
